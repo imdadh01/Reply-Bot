@@ -6,12 +6,12 @@ An Android app + Chrome extension for **three relevant AI reply suggestions**, i
 
 ## Current status
 
-Android v0.2.0 connects directly to Gemini using your own API key; it requires no backend URL or pairing token. The Chrome extension still uses the separately configured backend. APK builds use assembleDebug with tests excluded. No automated tests or live calls using a personal Gemini key have been run. X's DOM can change; extension detection may then need adjustment.
+Android v0.2.1 connects directly to Gemini using your own API key; it requires no backend URL or pairing token. The Chrome extension still uses the separately configured backend. APK builds use assembleDebug with tests excluded. No automated tests or live calls using a personal Gemini key have been run. Builds verify compilation only; your project must have model access and free quota. X's DOM can change; extension detection may then need adjustment.
 
 ## How it works
 
 - **Chrome on desktop:** each text post on `x.com`/`twitter.com` gets a `✦ Reply Bot` button. Clicking sends that post's displayed text to your backend, which calls Gemini. Nothing is sent just by scrolling or opening a post.
-- **Android v0.2.0:** save your own Gemini key once, then in X select Share → Reply Bot, or paste post text into the app. If X shares only a URL, paste the actual post text too. The app cannot read the X app's screen or place a button inside it.
+- **Android v0.2.1:** save your own Gemini key once, then in X select Share → Reply Bot, or paste post text into the app. If X shares only a URL, paste the actual post text too. The app cannot read the X app's screen or place a button inside it.
 - AI sees post text, selected language/tone, and your custom instruction. Images, videos, linked pages, and full threads are not analyzed. Replies can be inaccurate: review them.
 - Android keeps your own key encrypted using Android Keystore and sends requests directly to Google over HTTPS. No key is embedded in the APK or committed to GitHub. The extension uses a separate backend pairing token and keeps its Gemini key on that server. This is a personal-use project.
 
@@ -73,7 +73,7 @@ The workflow only runs on manual dispatch. It runs `assembleDebug -x test -x lin
 
 Option B — open `android/` in Android Studio with JDK 17, SDK 35, Android Gradle Plugin 8.9.2 and Gradle 8.11.1, then build an APK. No Gradle wrapper binary is bundled; use installed Gradle 8.11.1 or Android Studio's Gradle configuration. CLI from `android/`: `gradle assembleDebug -x test -x lint`.
 
-### Use Android v0.2.0 — no backend required
+### Use Android v0.2.1 — no backend required
 
 1. Open Reply Bot. Tap **API key lagao** if the key panel is not already open.
 2. Copy your own Gemini API key from https://aistudio.google.com/apikey .
@@ -82,7 +82,7 @@ Option B — open `android/` in Android Studio with JDK 17, SDK 35, Android Grad
 5. Choose **Zubaan**, **Andaaz**, and an optional instruction. Tap **3 reply banao**.
 6. Edit any reply and tap **Reply copy karo**. Paste and post it manually in X.
 
-The key panel collapses after saving; **API key badlo** lets you change or remove it. Saving is local and does not claim the key has been validated. The first reply request fetches available Gemini text Flash models and chooses a supported model, preferring Flash-Lite. Availability does not guarantee free quota: keep paid billing disabled on your Google project if you require free-only use. There is no paid fallback or automatic retry. The app limits generation attempts to 30 per UTC day (5 AM Pakistan reset); Google may enforce lower quotas. This local cap is not a provider billing cap.
+The key panel collapses after saving; **API key badlo** lets you change or remove it. Saving is local and does not claim the key has been validated. The first reply request fetches available Gemini text Flash models and chooses a supported model, preferring current Gemini 3.5 Flash-Lite, then Gemini 3.8 Flash. Legacy Gemini 2.5 is no longer preferred because Google restricts its access for new projects. If a model returns 404, the app tries at most two other listed text models; it never changes model after a quota, authentication, or network error. Availability does not guarantee free quota: keep paid billing disabled on your Google project if you require free-only use. The app never enables billing. The only automatic fallback is the bounded 404 handling described above. The app limits generation attempts to 30 per UTC day (5 AM Pakistan reset); Google may enforce lower quotas. This local cap is not a provider billing cap.
 
 Your key is encrypted with AES-GCM using an Android Keystore key. Backup and key-field autofill/state saving are disabled. API keys and provider response bodies are not logged. Post text and instructions go directly to Google only when you generate. Google may use free-tier content to improve products. Do not enter sensitive content unless you accept Google's data policy. App backups are disabled; activity state can temporarily preserve current post text through rotation, and clipboard contents are controlled by Android/your keyboard.
 
