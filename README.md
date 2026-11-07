@@ -6,16 +6,16 @@ An Android app + Chrome extension for **three relevant AI reply suggestions**, i
 
 ## Current status
 
-Source implementation, not a deployed service or compiled APK. No tests, build, browser validation, or live AI calls have been run. The APK workflow is manual-only and has not been run. You must configure Gemini access and an HTTPS backend before suggestions work. X's DOM can change; the extension's post detection may then need adjustment.
+Android v0.2.0 connects directly to Gemini using your own API key; it requires no backend URL or pairing token. The Chrome extension still uses the separately configured backend. APK builds use assembleDebug with tests excluded. No automated tests or live calls using a personal Gemini key have been run. X's DOM can change; extension detection may then need adjustment.
 
 ## How it works
 
 - **Chrome on desktop:** each text post on `x.com`/`twitter.com` gets a `✦ Reply Bot` button. Clicking sends that post's displayed text to your backend, which calls Gemini. Nothing is sent just by scrolling or opening a post.
-- **Android:** in X select Share → Reply Bot, or paste post text into the app. If X shares only a URL, paste the actual post text too. The app cannot read the X app's screen or place a button inside it.
+- **Android v0.2.0:** save your own Gemini key once, then in X select Share → Reply Bot, or paste post text into the app. If X shares only a URL, paste the actual post text too. The app cannot read the X app's screen or place a button inside it.
 - AI sees post text, selected language/tone, and your custom instruction. Images, videos, linked pages, and full threads are not analyzed. Replies can be inaccurate: review them.
-- The Gemini key stays exclusively on the server. Clients use a separate pairing token. This is a personal-use service, not a multi-user SaaS authentication system.
+- Android keeps your own key encrypted using Android Keystore and sends requests directly to Google over HTTPS. No key is embedded in the APK or committed to GitHub. The extension uses a separate backend pairing token and keeps its Gemini key on that server. This is a personal-use project.
 
-## 1. Backend: Gemini connection
+## 1. Backend: Gemini connection (Chrome extension only)
 
 Requirements: Node.js 22+, Gemini API key, and a server with persistent disk. No npm packages are needed.
 
@@ -73,15 +73,22 @@ The workflow only runs on manual dispatch. It runs `assembleDebug -x test -x lin
 
 Option B — open `android/` in Android Studio with JDK 17, SDK 35, Android Gradle Plugin 8.9.2 and Gradle 8.11.1, then build an APK. No Gradle wrapper binary is bundled; use installed Gradle 8.11.1 or Android Studio's Gradle configuration. CLI from `android/`: `gradle assembleDebug -x test -x lint`.
 
-### Use it
+### Use Android v0.2.0 — no backend required
 
-1. Open the app and expand **Connection settings**.
-2. Set your HTTPS backend origin and pairing token; save.
-3. Paste a post's text, or share a post from X into Reply Bot.
-4. Choose language, tone, and optional instruction, then tap **Suggest 3 replies**.
-5. Edit a reply, tap **Copy reply**, and paste it in X manually.
+1. Open Reply Bot. Tap **API key lagao** if the key panel is not already open.
+2. Copy your own Gemini API key from https://aistudio.google.com/apikey .
+3. Tap **Key paste karo**, then **Key save karo**. No URL or pairing token is required.
+4. Paste a post's actual text using **Post paste karo**, or share from X into Reply Bot. A URL alone cannot be read.
+5. Choose **Zubaan**, **Andaaz**, and an optional instruction. Tap **3 reply banao**.
+6. Edit any reply and tap **Reply copy karo**. Paste and post it manually in X.
 
-No accessibility service, overlay permission, clipboard monitoring, or X login is used. Connection settings are stored privately on the device; app backup is disabled. The pairing token is not hardware-backed encrypted; use a device lock and rotate the server token if your device is lost. Post text and generated replies are not saved as an app history. Android may preserve the current screen temporarily through activity state; the clipboard holds a reply only when you copy it. Device keyboards/clipboard providers have their own privacy behavior.
+The key panel collapses after saving; **API key badlo** lets you change or remove it. Saving is local and does not claim the key has been validated. The first reply request fetches available Gemini text Flash models and chooses a supported model, preferring Flash-Lite. Availability does not guarantee free quota: keep paid billing disabled on your Google project if you require free-only use. There is no paid fallback or automatic retry. The app limits generation attempts to 30 per UTC day (5 AM Pakistan reset); Google may enforce lower quotas. This local cap is not a provider billing cap.
+
+Your key is encrypted with AES-GCM using an Android Keystore key. Backup and key-field autofill/state saving are disabled. API keys and provider response bodies are not logged. Post text and instructions go directly to Google only when you generate. Google may use free-tier content to improve products. Do not enter sensitive content unless you accept Google's data policy. App backups are disabled; activity state can temporarily preserve current post text through rotation, and clipboard contents are controlled by Android/your keyboard.
+
+The app has a native adaptive bot launcher icon and Roman Urdu instructions, including explicit paste/copy controls. Android 15 edge-to-edge opt-out prevents system bars from covering controls. Images/video and entire X threads are not read. No accessibility service, overlay permission, X login, automatic posting, or account monitoring is used.
+
+**Installing a rebuilt debug APK:** GitHub runners may sign with a different debug key. If Android says the update conflicts with the existing app, uninstall the old debug app first, then install the new APK. Uninstalling clears its saved settings/key. These are personal-use debug builds, not Play Store releases.
 
 ## GitHub repository
 
@@ -107,7 +114,7 @@ Errors return `{ "error": "Readable explanation" }` and an appropriate HTTP stat
 
 ## Privacy
 
-Text and style instructions go to your server and Google Gemini for generation. There are no analytics or content logs in the app/backend code. Hosting providers and Google may apply their own logging/data policies; Gemini free-tier inputs may be used for product improvement. Do not send private/sensitive posts unless you accept those policies. Errors never forward provider response bodies or API keys to clients.
+On Android, text and style instructions go directly to Google Gemini. The extension sends them through your configured server. There are no analytics or content logs in the app/backend code. Hosting providers and Google may apply their own logging/data policies; Gemini free-tier inputs may be used for product improvement. Do not send private/sensitive posts unless you accept those policies. Errors never forward provider response bodies or API keys to clients.
 
 ## References
 

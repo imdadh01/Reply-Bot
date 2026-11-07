@@ -1,11 +1,15 @@
 name: Build Android APK (manual, no tests)
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android-apk.yml']
 permissions:
   contents: read
 jobs:
   apk:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.before == '49e8b2d93bc6859457874b1b9ee0e17a2bea6443'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -22,9 +26,9 @@ jobs:
         working-directory: android
         run: gradle --no-daemon assembleDebug -x test -x lint
       - name: Name APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk reply-bot.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk reply-bot-easy.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: reply-bot-android-debug
+          name: reply-bot-easy-android
           path: reply-bot.apk
           if-no-files-found: error
