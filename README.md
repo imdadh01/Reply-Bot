@@ -1,3 +1,13 @@
+## Android v0.3.0: optional floating button inside X
+
+Open Reply Bot → **X par bot icon chalao** → read the disclosure → **Settings kholo**. In Android Accessibility / Installed apps (names vary by phone), enable **Reply Bot — X reader** yourself. The app cannot enable this permission for you. Sideloaded apps may be restricted by Android; if the permission is blocked, use the existing copy/share flow instead. No security-setting changes are automated.
+
+Open a post in the official X app. A draggable floating bot button appears. Tap it, select the relevant post text from the preview, then tap **Reply banao**. Reply Bot opens and generates three replies using your saved Gemini key. Long-press the bubble to pause it; re-enable the service to resume. Disable the Accessibility service to stop it completely.
+
+This is a floating overlay, not a button inserted into X's own UI. It reads accessibility-exposed text only after a manual tap and only from the foreground X app (`com.twitter.android` / `com.twitter.android.lite`). Window/package metadata is used only to show/hide the icon; no background text collection, screenshots, OCR, gesture automation, or posting is performed. The preview may include visible replies; select only the desired post. If X does not expose readable text, use copy/share. Images and videos are unsupported. The service requests screen-content capability, is disabled by default, and requires the user's explicit opt-in in Android settings. No other app's text is traversed.
+
+This release has been compiled without tests. Accessibility behavior on a physical X app and live Gemini generation have not been verified in this environment.
+
 # ✦ Reply Bot
 
 An Android app + Chrome extension for **three relevant AI reply suggestions**, in Roman Urdu, Urdu, or English. Friendly, funny, professional, and thoughtful tones. Custom instructions, editable replies, and copy buttons.

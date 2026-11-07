@@ -61,6 +61,14 @@ class MainActivity : Activity() {
         heading.addView(TextView(this).apply { text = "Reply Bot"; textSize = 30f; setTextColor(Color.WHITE); setTypeface(null, Typeface.BOLD); setPadding(dp(12), 0, 0, 0) })
         column.addView(heading)
         column.addView(label("Post paste karo. Apni pasand ka reply lo.", 16f))
+        val floating = button("X par bot icon chalao"); column.addView(floating)
+        floating.setOnClickListener {
+            android.app.AlertDialog.Builder(this).setTitle("X par floating bot icon")
+                .setMessage("Ye optional Accessibility service hai. Icon dabane par sirf X ki visible post ka readable text parhegi. Tum text select karoge, phir woh Gemini ko reply banane ke liye jayega. Doosri apps ka text, photos aur videos nahi parhti. Koi auto-posting nahi.\n\nSettings mein Reply Bot — X reader ko khud enable karo. Baad mein wahin se band kar sakte ho.")
+                .setNegativeButton("Abhi nahi", null)
+                .setPositiveButton("Settings kholo") { _, _ -> startActivity(Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)) }.show()
+        }
+        column.addView(label("X mein post kholo → floating bot dabao → post ka text select karo → Reply banao. Icon ko drag karke jagah badal sakte ho."))
         keyStatus = label(""); column.addView(keyStatus)
         keyToggle = button(""); column.addView(keyToggle)
         keyPanel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }; column.addView(keyPanel)
@@ -138,6 +146,10 @@ class MainActivity : Activity() {
             requestVersion++; generate.isEnabled = true
             post.setText(i.getStringExtra(Intent.EXTRA_TEXT).orEmpty().take(6000)); results.removeAllViews()
             status.text = "Post aa gayi. Agar sirf link hai to text paste karo. Phir 3 reply banao dabao."
+            if (i.getBooleanExtra("from_x_reader", false)) {
+                i.removeExtra("from_x_reader")
+                generate.post { if (!isDestroyed) suggest() }
+            }
         }
     }
     override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); setIntent(intent); receive(intent) }

@@ -1,0 +1,1 @@
+<resources><string name="x_reader_description">Optional floating reply button for X. Reads only visible X text when you tap the bot. You choose the text before it is sent to Gemini. Does not read other apps, capture photos/videos, click X controls, or post replies. Turn off this service anytime in Accessibility settings.</string></resources>
