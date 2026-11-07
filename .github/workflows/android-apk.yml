@@ -1,16 +1,11 @@
-name: Build Android APK (no tests)
+name: Build Android APK (manual, no tests)
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/android-apk.yml'
 permissions:
   contents: read
 jobs:
   apk:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event.before == '7cdc4a21d10b45db216f4220099edb042b544c3a'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
