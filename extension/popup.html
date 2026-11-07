@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reply Bot</title><link rel="stylesheet" href="popup.css"></head><body>
+<header><span class="badge">RS</span><div><h1>Reply Bot</h1><p>Your words. A little help.</p></div></header>
+<form id="settings">
+<label>Backend HTTPS URL<input id="backend" type="url" placeholder="https://your-server.example" required></label>
+<label>Pairing token<input id="token" type="password" autocomplete="off" required placeholder="Server APP_TOKEN, not Gemini key"></label>
+<div class="row"><label>Language<select id="language"><option>Roman Urdu</option><option>Urdu</option><option>English</option></select></label><label>Tone<select id="tone"><option>Friendly</option><option>Funny</option><option>Professional</option><option>Thoughtful</option></select></label></div>
+<label>Your instruction<textarea id="instruction" maxlength="500" rows="3" placeholder="Chhota, natural reply likho. Emojis kam rakho."></textarea></label>
+<button type="submit">Save settings</button><p id="status" role="status"></p>
+</form><footer>Post ke paas ✦ Reply Bot dabao.<br>Only that post's text goes to AI when you click. Images and videos are not analyzed. You post manually.</footer><script src="popup.js"></script></body></html>

@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Reply Bot",
+  "description": "Click beside an X post for three AI reply suggestions. Copy, edit, and post yourself.",
+  "version": "0.1.0",
+  "permissions": ["storage"],
+  "optional_host_permissions": ["https://*/*"],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_popup": "popup.html", "default_title": "Reply Bot settings"},
+  "content_scripts": [{"matches": ["https://x.com/*", "https://twitter.com/*"], "js": ["content.js"], "run_at": "document_idle"}]
+}
